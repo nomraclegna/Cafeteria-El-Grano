@@ -1,0 +1,137 @@
+:root {
+    --cafe: #6f4e37;
+    --cafe-oscuro: #4a3324;
+    --crema: #f7f1ea;
+    --borde: #e2d6c8;
+    --rojo: #b3261e;
+    --verde: #2e7d32;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--crema);
+    color: #2b2118;
+}
+
+h1, h2 { color: var(--cafe-oscuro); }
+h2 { font-size: 1.2rem; margin: 1rem 0 .6rem; }
+
+button {
+    background: var(--cafe);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: .5rem .9rem;
+    cursor: pointer;
+    font-size: .9rem;
+}
+button:hover { background: var(--cafe-oscuro); }
+button.secundario { background: transparent; color: var(--cafe); border: 1px solid var(--cafe); }
+button.peligro { background: var(--rojo); }
+button.mini { padding: .25rem .55rem; font-size: .8rem; }
+
+input, select {
+    width: 100%;
+    padding: .45rem;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    font-size: .95rem;
+}
+
+label { display: block; margin: .6rem 0; font-size: .9rem; }
+
+.oculto, .es-cajero .solo-admin { display: none !important; }
+.tenue { color: #7a6a5c; }
+.pequeno { font-size: .8rem; }
+
+.tarjeta {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1.2rem;
+}
+
+.login {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+}
+.login form { width: 320px; }
+.login button { width: 100%; margin-top: .5rem; }
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--cafe-oscuro);
+    color: #fff;
+    padding: .7rem 1.5rem;
+}
+header nav { display: flex; gap: .3rem; flex: 1; }
+header nav button { background: transparent; }
+header nav button.activo { background: var(--cafe); }
+header .usuario { display: flex; align-items: center; gap: .8rem; }
+header .secundario { color: #fff; border-color: #fff; }
+
+main { padding: 1rem 1.5rem 3rem; }
+
+.columnas { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start; }
+
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .8rem; }
+.producto {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: .9rem;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+.producto .precio { font-weight: 600; color: var(--cafe); }
+.producto button { margin-top: auto; }
+
+.carrito { list-style: none; padding: 0; margin: 0; }
+.carrito li { padding: .5rem 0; border-bottom: 1px solid var(--borde); }
+.carrito .linea { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+.carrito .controles { display: flex; align-items: center; gap: .3rem; }
+.carrito .nota { margin-top: .35rem; padding: .3rem .45rem; font-size: .8rem; }
+.total { font-size: 1.2rem; font-weight: 600; }
+aside button#btn-registrar { width: 100%; }
+
+.barra { display: flex; align-items: end; gap: 1rem; }
+.barra label { margin: 0; }
+.barra select, .barra input { width: auto; }
+
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; }
+th, td { text-align: left; padding: .55rem .7rem; border-bottom: 1px solid var(--borde); font-size: .9rem; }
+th { background: #efe5d9; }
+td .mini + .mini { margin-left: .3rem; }
+
+.etiqueta { padding: .15rem .5rem; border-radius: 999px; font-size: .75rem; background: #eee; }
+.etiqueta.pendiente { background: #fff3cd; }
+.etiqueta.en_preparacion { background: #d6e9ff; }
+.etiqueta.entregado, .etiqueta.ok { background: #d8f0da; color: var(--verde); }
+.etiqueta.cancelado, .etiqueta.bajo { background: #fbdcd9; color: var(--rojo); }
+
+.resumen { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .8rem; margin: 1rem 0; }
+.resumen .tarjeta strong { display: block; font-size: 1.4rem; color: var(--cafe); }
+
+.aviso {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    max-width: 420px;
+    padding: .9rem 1.1rem;
+    border-radius: 8px;
+    color: #fff;
+    background: var(--verde);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+}
+.aviso.error { background: var(--rojo); }
+
+dialog { width: 320px; }
+dialog::backdrop { background: rgba(0, 0, 0, .35); }
+dialog .acciones { display: flex; justify-content: end; gap: .5rem; margin-top: .8rem; }

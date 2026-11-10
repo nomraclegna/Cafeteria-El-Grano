@@ -1,0 +1,1874 @@
+{
+  "info": {
+    "name": "API Cafetería El Grano - PIA",
+    "description": "Pruebas de la API. Ejecutar en orden con el Collection Runner y la API corriendo en http://127.0.0.1:8000.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "Login administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"usuario.rol = admin\", () => pm.expect(json.usuario.rol).to.eql(\"admin\"));",
+                  "pm.collectionVariables.set(\"token_admin\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "Admin123*"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login cajero",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"usuario.rol = cajero\", () => pm.expect(json.usuario.rol).to.eql(\"cajero\"));",
+                  "pm.collectionVariables.set(\"token_cajero\", json.access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "cajero"
+                },
+                {
+                  "key": "password",
+                  "value": "Cajero123*"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login con contraseña incorrecta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "incorrecta"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil del usuario autenticado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"usuario = admin\", () => pm.expect(json.usuario).to.eql(\"admin\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        },
+        {
+          "name": "Petición sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/productos"
+          }
+        },
+        {
+          "name": "Petición con token inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer token_invalido"
+              }
+            ],
+            "url": "{{baseUrl}}/productos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Crear usuario cajero",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"rol = cajero\", () => pm.expect(json.rol).to.eql(\"cajero\"));",
+                  "pm.test(\"activo = True\", () => pm.expect(json.activo).to.eql(true));",
+                  "pm.collectionVariables.set(\"usuario_nuevo_id\", json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Barista de prueba\",\n  \"usuario\": \"barista{{$timestamp}}\",\n  \"password\": \"Barista2026*\",\n  \"rol\": \"cajero\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear usuario duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Otro admin\",\n  \"usuario\": \"admin\",\n  \"password\": \"Admin123*\",\n  \"rol\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear usuario con contraseña corta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario corto\",\n  \"usuario\": \"corto\",\n  \"password\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cajero intenta listar usuarios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Desactivar usuario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"activo = False\", () => pm.expect(json.activo).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios/{{usuario_nuevo_id}}"
+          }
+        },
+        {
+          "name": "Administrador intenta desactivarse",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/usuarios/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Inventario",
+      "item": [
+        {
+          "name": "Crear insumo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"stock = 500\", () => pm.expect(json.stock).to.eql(500));",
+                  "pm.test(\"stock_bajo = False\", () => pm.expect(json.stock_bajo).to.eql(false));",
+                  "pm.collectionVariables.set(\"insumo_id\", json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Canela molida {{$timestamp}}\",\n  \"unidad\": \"g\",\n  \"stock_inicial\": 500,\n  \"stock_minimo\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear insumo con stock negativo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Azúcar\",\n  \"unidad\": \"g\",\n  \"stock_inicial\": -10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear insumo con unidad inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Azúcar\",\n  \"unidad\": \"kg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar insumos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos"
+          }
+        },
+        {
+          "name": "Registrar entrada de mercancía",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"tipo = entrada\", () => pm.expect(json.tipo).to.eql(\"entrada\"));",
+                  "pm.test(\"stock_resultante = 1500\", () => pm.expect(json.stock_resultante).to.eql(1500));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}/entradas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 1000,\n  \"motivo\": \"Compra a proveedor\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Registrar merma mayor al stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}/mermas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 99999,\n  \"motivo\": \"Prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Registrar merma",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"cantidad = -100\", () => pm.expect(json.cantidad).to.eql(-100));",
+                  "pm.test(\"stock_resultante = 1400\", () => pm.expect(json.stock_resultante).to.eql(1400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}/mermas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 100,\n  \"motivo\": \"Se derramó al servir\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cajero intenta registrar entrada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}/entradas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Historial de movimientos del insumo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Cantidad de registros = 3\", () => pm.expect(json.length).to.eql(3));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/movimientos?insumo_id={{insumo_id}}"
+          }
+        },
+        {
+          "name": "Insumo inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/99999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Productos",
+      "item": [
+        {
+          "name": "Crear producto con precio 0 (cortesía)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"precio = 0\", () => pm.expect(json.precio).to.eql(0));",
+                  "pm.collectionVariables.set(\"producto_id\", json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Agua de canela {{$timestamp}}\",\n  \"descripcion\": \"Producto de prueba\",\n  \"categoria\": \"bebida_fria\",\n  \"precio\": 0,\n  \"receta\": [\n    {\n      \"insumo_id\": {{insumo_id}},\n      \"cantidad\": 100\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear producto con precio negativo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto inválido\",\n  \"categoria\": \"postre\",\n  \"precio\": -5,\n  \"receta\": [\n    {\n      \"insumo_id\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear producto sin receta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto sin receta\",\n  \"categoria\": \"postre\",\n  \"precio\": 20,\n  \"receta\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear producto con nombre duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"capuchino\",\n  \"categoria\": \"bebida_caliente\",\n  \"precio\": 50,\n  \"receta\": [\n    {\n      \"insumo_id\": 1,\n      \"cantidad\": 18\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear producto con insumo inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto fantasma\",\n  \"categoria\": \"postre\",\n  \"precio\": 20,\n  \"receta\": [\n    {\n      \"insumo_id\": 99999,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cajero intenta crear producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto cajero\",\n  \"categoria\": \"postre\",\n  \"precio\": 20,\n  \"receta\": [\n    {\n      \"insumo_id\": 1,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar productos (cajero)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos"
+          }
+        },
+        {
+          "name": "Actualizar precio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"precio = 15.5\", () => pm.expect(json.precio).to.eql(15.5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos/{{producto_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precio\": 15.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Producto inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos/99999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Pedidos (proceso central)",
+      "item": [
+        {
+          "name": "Registrar pedido en efectivo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"total = 46.5\", () => pm.expect(json.total).to.eql(46.5));",
+                  "pm.test(\"cambio = 53.5\", () => pm.expect(json.cambio).to.eql(53.5));",
+                  "pm.test(\"estado = pendiente\", () => pm.expect(json.estado).to.eql(\"pendiente\"));",
+                  "pm.test(\"detalles.len = 1\", () => pm.expect(json.detalles.length).to.eql(1));",
+                  "pm.test(\"detalles.0.cantidad = 3\", () => pm.expect(json.detalles[0].cantidad).to.eql(3));",
+                  "pm.test(\"detalles.0.notas = Sin azúcar\", () => pm.expect(json.detalles[0].notas).to.eql(\"Sin azúcar\"));",
+                  "pm.collectionVariables.set(\"pedido_id\", json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"Sofía\",\n  \"metodo_pago\": \"efectivo\",\n  \"monto_recibido\": 100,\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 2,\n      \"notas\": \"Sin azúcar\"\n    },\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1,\n      \"notas\": \"Sin azúcar\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Verificar descuento de inventario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"stock = 1100\", () => pm.expect(json.stock).to.eql(1100));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}"
+          }
+        },
+        {
+          "name": "Pedido con monto insuficiente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"efectivo\",\n  \"monto_recibido\": 1,\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pedido en efectivo sin monto recibido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"efectivo\",\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pedido con inventario insuficiente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 50\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pedido con producto inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": [\n    {\n      \"producto_id\": 99999,\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pedido sin productos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pedido con nota de más de 100 caracteres",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1,\n      \"notas\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Registrar pedido con tarjeta y notas distintas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"total = 31\", () => pm.expect(json.total).to.eql(31));",
+                  "pm.test(\"cambio = 0\", () => pm.expect(json.cambio).to.eql(0));",
+                  "pm.test(\"detalles.len = 2\", () => pm.expect(json.detalles.length).to.eql(2));",
+                  "pm.test(\"detalles.0.notas = None\", () => pm.expect(json.detalles[0].notas).to.eql(null));",
+                  "pm.test(\"detalles.1.notas = Extra canela\", () => pm.expect(json.detalles[1].notas).to.eql(\"Extra canela\"));",
+                  "pm.collectionVariables.set(\"pedido_cancelar_id\", json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1\n    },\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1,\n      \"notas\": \"Extra canela\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cajero intenta cancelar pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_cancelar_id}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cancelar pedido (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"estado = cancelado\", () => pm.expect(json.estado).to.eql(\"cancelado\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_cancelar_id}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"El cliente se retiró\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Verificar devolución al inventario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"stock = 1100\", () => pm.expect(json.stock).to.eql(1100));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/inventario/insumos/{{insumo_id}}"
+          }
+        },
+        {
+          "name": "Cancelar pedido ya cancelado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_cancelar_id}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Otra vez\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Pasar pedido a preparación",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"estado = en_preparacion\", () => pm.expect(json.estado).to.eql(\"en_preparacion\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}/estado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"en_preparacion\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Transición de estado inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}/estado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"en_preparacion\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cancelar pedido en preparación",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}/cancelar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"Prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Entregar pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"estado = entregado\", () => pm.expect(json.estado).to.eql(\"entregado\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}/estado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"entregado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Estado no permitido en PATCH",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}/estado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"cancelado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar pedidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos"
+          }
+        },
+        {
+          "name": "Consultar pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"estado = entregado\", () => pm.expect(json.estado).to.eql(\"entregado\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos/{{pedido_id}}"
+          }
+        },
+        {
+          "name": "Desactivar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test(\"activo = False\", () => pm.expect(json.activo).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/productos/{{producto_id}}"
+          }
+        },
+        {
+          "name": "Pedido con producto desactivado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/pedidos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"tarjeta\",\n  \"items\": [\n    {\n      \"producto_id\": {{producto_id}},\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Reportes",
+      "item": [
+        {
+          "name": "Reporte de ventas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reportes/ventas"
+          }
+        },
+        {
+          "name": "Reporte con rango de fechas inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reportes/ventas?fecha_inicio=2026-12-31&fecha_fin=2026-01-01"
+          }
+        },
+        {
+          "name": "Productos más vendidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reportes/productos-mas-vendidos?limite=5"
+          }
+        },
+        {
+          "name": "Insumos con stock bajo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reportes/stock-bajo"
+          }
+        },
+        {
+          "name": "Cajero intenta ver reportes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_cajero}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reportes/ventas"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000/v1/api"
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_cajero",
+      "value": ""
+    },
+    {
+      "key": "usuario_nuevo_id",
+      "value": ""
+    },
+    {
+      "key": "insumo_id",
+      "value": ""
+    },
+    {
+      "key": "producto_id",
+      "value": ""
+    },
+    {
+      "key": "pedido_id",
+      "value": ""
+    },
+    {
+      "key": "pedido_cancelar_id",
+      "value": ""
+    }
+  ]
+}

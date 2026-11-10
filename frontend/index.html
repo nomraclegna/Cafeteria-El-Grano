@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafetería El Grano</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <section id="vista-login" class="login oculto">
+        <form id="form-login" class="tarjeta">
+            <h1>Cafetería El Grano</h1>
+            <p class="tenue">Inicia sesión para continuar</p>
+            <label>Usuario <input name="username" autocomplete="username" required></label>
+            <label>Contraseña <input name="password" type="password" autocomplete="current-password" required></label>
+            <button type="submit">Entrar</button>
+        </form>
+    </section>
+
+    <div id="vista-app" class="oculto">
+        <header>
+            <strong>Cafetería El Grano</strong>
+            <nav>
+                <button data-vista="pedido" class="activo">Nuevo pedido</button>
+                <button data-vista="pedidos">Pedidos</button>
+                <button data-vista="inventario">Inventario</button>
+                <button data-vista="productos" class="solo-admin">Productos</button>
+                <button data-vista="reportes" class="solo-admin">Reportes</button>
+            </nav>
+            <div class="usuario">
+                <span id="nombre-usuario"></span>
+                <button id="btn-salir" class="secundario">Salir</button>
+            </div>
+        </header>
+
+        <main>
+            <section id="vista-pedido" class="vista columnas">
+                <div>
+                    <h2>Menú</h2>
+                    <div id="menu" class="menu"></div>
+                </div>
+                <aside class="tarjeta">
+                    <h2>Pedido actual</h2>
+                    <ul id="carrito" class="carrito"></ul>
+                    <p class="total">Total: <span id="total">$0.00</span></p>
+                    <label>Cliente (opcional) <input id="cliente" maxlength="60"></label>
+                    <label>Método de pago
+                        <select id="metodo-pago">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                        </select>
+                    </label>
+                    <label id="campo-monto">Monto recibido <input id="monto-recibido" type="number" min="0" step="0.01"></label>
+                    <p id="cambio" class="tenue"></p>
+                    <button id="btn-registrar">Registrar pedido</button>
+                </aside>
+            </section>
+
+            <section id="vista-pedidos" class="vista oculto">
+                <div class="barra">
+                    <h2>Pedidos</h2>
+                    <select id="filtro-estado">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="en_preparacion">En preparación</option>
+                        <option value="entregado">Entregados</option>
+                        <option value="cancelado">Cancelados</option>
+                    </select>
+                </div>
+                <table>
+                    <thead><tr><th>#</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th></th></tr></thead>
+                    <tbody id="tabla-pedidos"></tbody>
+                </table>
+            </section>
+
+            <section id="vista-inventario" class="vista oculto">
+                <h2>Insumos</h2>
+                <table>
+                    <thead><tr><th>Insumo</th><th>Stock</th><th>Mínimo</th><th>Estado</th><th class="solo-admin"></th></tr></thead>
+                    <tbody id="tabla-insumos"></tbody>
+                </table>
+                <div class="solo-admin">
+                    <h2>Últimos movimientos</h2>
+                    <table>
+                        <thead><tr><th>Fecha</th><th>Insumo</th><th>Tipo</th><th>Cantidad</th><th>Stock resultante</th><th>Motivo</th></tr></thead>
+                        <tbody id="tabla-movimientos"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="vista-productos" class="vista oculto">
+                <h2>Productos</h2>
+                <table>
+                    <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Receta</th><th>Estado</th><th></th></tr></thead>
+                    <tbody id="tabla-productos"></tbody>
+                </table>
+            </section>
+
+            <section id="vista-reportes" class="vista oculto">
+                <div class="barra">
+                    <h2>Reporte de ventas</h2>
+                    <label>Desde <input id="fecha-inicio" type="date"></label>
+                    <label>Hasta <input id="fecha-fin" type="date"></label>
+                    <button id="btn-reporte">Generar</button>
+                </div>
+                <div id="resumen-ventas" class="resumen"></div>
+                <div class="columnas">
+                    <div>
+                        <h2>Productos más vendidos</h2>
+                        <table>
+                            <thead><tr><th>Producto</th><th>Unidades</th><th>Importe</th></tr></thead>
+                            <tbody id="tabla-top"></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h2>Insumos con stock bajo</h2>
+                        <ul id="lista-stock-bajo"></ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <dialog id="dialogo" class="tarjeta">
+        <form method="dialog">
+            <label><span id="dialogo-texto"></span> <input id="dialogo-input"></label>
+            <div class="acciones">
+                <button type="button" id="dialogo-cancelar" class="secundario">Cancelar</button>
+                <button value="ok">Aceptar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="aviso" class="aviso oculto"></div>
+    <script src="app.js"></script>
+</body>
+</html>
