@@ -5,7 +5,9 @@ description = "API REST para la administración de una cafetería: productos, in
 authors = [
     { name = "Angel Emiliano Carmona Lozano" },
     { name = "Luis Rolando Aguilar Ortiz" },
-    { name = "Lilian Valeria Ramos Avila" }
+    { name = "Lilian Valeria Ramos Avila" },
+    { name = "Dylan Isai Garcia Tovar" },
+    { name = "Diego Barrientos Gallegos" }
 ]
 readme = "README.md"
 requires-python = ">=3.11"
