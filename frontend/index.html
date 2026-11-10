@@ -4,22 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafetería El Grano</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <section id="vista-login" class="login oculto">
-        <form id="form-login" class="tarjeta">
-            <h1>Cafetería El Grano</h1>
-            <p class="tenue">Inicia sesión para continuar</p>
-            <label>Usuario <input name="username" autocomplete="username" required></label>
-            <label>Contraseña <input name="password" type="password" autocomplete="current-password" required></label>
-            <button type="submit">Entrar</button>
-        </form>
+        <div class="login-layout">
+            <div class="login-banner">
+                <div class="banner-decoracion">
+                    <div class="circulo-decorativo c1"></div>
+                    <div class="circulo-decorativo c2"></div>
+                </div>
+                <div class="banner-contenido">
+                    <div class="badge-pos">
+                        <span class="punto-verde"></span> Sistema POS &amp; Administración
+                    </div>
+                    
+                    <div class="banner-logo-marca">
+                        <div class="emblema-cafe">
+                            <svg class="icono-taza" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+                                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+                                <line class="vapor v1" x1="6" y1="2" x2="6" y2="4"></line>
+                                <line class="vapor v2" x1="10" y1="1" x2="10" y2="4"></line>
+                                <line class="vapor v3" x1="14" y1="2" x2="14" y2="4"></line>
+                            </svg>
+                        </div>
+                        <h1 class="banner-titulo">Cafetería<br><span>El Grano</span></h1>
+                    </div>
+                    
+                    <p class="banner-lema">Tradición, aroma y excelencia en cada preparación.</p>
+                    
+                    <ul class="banner-caracteristicas">
+                        <li>
+                            <div class="check-icono">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span>Control rápido de pedidos y barra de preparación</span>
+                        </li>
+                        <li>
+                            <div class="check-icono">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span>Inventario automatizado con alertas de stock</span>
+                        </li>
+                        <li>
+                            <div class="check-icono">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span>Métricas, reportes de ventas y balance diario</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="login-panel">
+                <div class="login-card-container">
+                    <div class="login-header">
+                        <div class="mobile-logo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+                                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+                                <line x1="6" y1="2" x2="6" y2="4"></line>
+                                <line x1="10" y1="2" x2="10" y2="4"></line>
+                                <line x1="14" y1="2" x2="14" y2="4"></line>
+                            </svg>
+                        </div>
+                        <h2>Bienvenido de nuevo</h2>
+                        <p class="login-subtitulo">Ingresa con tus credenciales para acceder</p>
+                    </div>
+
+                    <form id="form-login" class="login-form">
+                        <div class="campo-grupo">
+                            <label for="input-username">Usuario</label>
+                            <div class="input-icono-wrapper">
+                                <svg class="input-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input id="input-username" name="username" autocomplete="username" placeholder="Ingrese su nombre de usuario" required>
+                            </div>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="input-password">Contraseña</label>
+                            <div class="input-icono-wrapper">
+                                <svg class="input-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input id="input-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                                <button type="button" id="btn-toggle-pass" class="btn-toggle-pass" title="Mostrar/ocultar contraseña" aria-label="Mostrar/ocultar contraseña">
+                                    <svg class="icono-ojo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="icono-ojo-tachado oculto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="login-alerta" class="login-alerta oculto"></div>
+
+                        <button type="submit" id="btn-login-submit" class="btn-entrar">
+                            <span class="btn-texto">Ingresar al Sistema</span>
+                            <span class="spinner-carga oculto"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
 
     <div id="vista-app" class="oculto">
         <header>
-            <strong>Cafetería El Grano</strong>
+            <div class="marca-header">
+                <div class="emblema-cafe-header">
+                    <svg class="icono-taza-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+                        <line class="vapor v1" x1="6" y1="2" x2="6" y2="4"></line>
+                        <line class="vapor v2" x1="10" y1="1" x2="10" y2="4"></line>
+                        <line class="vapor v3" x1="14" y1="2" x2="14" y2="4"></line>
+                    </svg>
+                </div>
+                <strong>Cafetería El Grano</strong>
+            </div>
             <nav>
                 <button data-vista="pedido" class="activo">Nuevo pedido</button>
                 <button data-vista="pedidos">Pedidos</button>

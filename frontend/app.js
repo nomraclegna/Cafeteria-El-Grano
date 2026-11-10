@@ -76,16 +76,61 @@ function pedir(texto, valor = "") {
 $("#dialogo-cancelar").addEventListener("click", () => $("#dialogo").close());
 
 // Sesión
+function mostrarErrorLogin(mensaje) {
+    const alerta = $("#login-alerta");
+    const tarjeta = $(".login-card-container");
+    if (alerta) {
+        alerta.textContent = mensaje;
+        alerta.classList.remove("oculto");
+    }
+    if (tarjeta) {
+        tarjeta.classList.remove("shake");
+        void tarjeta.offsetWidth;
+        tarjeta.classList.add("shake");
+    }
+}
+
+const btnTogglePass = $("#btn-toggle-pass");
+if (btnTogglePass) {
+    btnTogglePass.addEventListener("click", () => {
+        const passInput = $("#input-password");
+        if (!passInput) return;
+        const esPass = passInput.type === "password";
+        passInput.type = esPass ? "text" : "password";
+        $(".icono-ojo")?.classList.toggle("oculto", esPass);
+        $(".icono-ojo-tachado")?.classList.toggle("oculto", !esPass);
+    });
+}
+
 $("#form-login").addEventListener("submit", (evento) => {
     evento.preventDefault();
+    $("#login-alerta")?.classList.add("oculto");
+
+    const btnSubmit = $("#btn-login-submit");
+    const txtSubmit = btnSubmit?.querySelector(".btn-texto");
+    const spinner = btnSubmit?.querySelector(".spinner-carga");
+
+    if (btnSubmit) btnSubmit.disabled = true;
+    if (txtSubmit) txtSubmit.textContent = "Verificando...";
+    if (spinner) spinner.classList.remove("oculto");
+
     ejecutar(async () => {
-        const datos = await api("/auth/login", { method: "POST", form: new FormData(evento.target) });
-        sesion.token = datos.access_token;
-        sesion.usuario = datos.usuario;
-        sessionStorage.setItem("token", sesion.token);
-        sessionStorage.setItem("usuario", JSON.stringify(sesion.usuario));
-        evento.target.reset();
-        mostrarApp();
+        try {
+            const datos = await api("/auth/login", { method: "POST", form: new FormData(evento.target) });
+            sesion.token = datos.access_token;
+            sesion.usuario = datos.usuario;
+            sessionStorage.setItem("token", sesion.token);
+            sessionStorage.setItem("usuario", JSON.stringify(sesion.usuario));
+            evento.target.reset();
+            mostrarApp();
+        } catch (error) {
+            mostrarErrorLogin(error.message || "Usuario o contraseña incorrectos");
+            throw error;
+        } finally {
+            if (btnSubmit) btnSubmit.disabled = false;
+            if (txtSubmit) txtSubmit.textContent = "Ingresar al Sistema";
+            if (spinner) spinner.classList.add("oculto");
+        }
     });
 });
 
@@ -96,6 +141,7 @@ function cerrarSesion() {
     sesion.usuario = null;
     sessionStorage.clear();
     carrito = [];
+    $("#login-alerta")?.classList.add("oculto");
     $("#vista-app").classList.add("oculto");
     $("#vista-login").classList.remove("oculto");
 }
