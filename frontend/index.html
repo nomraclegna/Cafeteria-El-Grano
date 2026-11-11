@@ -140,6 +140,7 @@
                 <button data-vista="pedidos">Pedidos</button>
                 <button data-vista="inventario">Inventario</button>
                 <button data-vista="productos" class="solo-admin">Productos</button>
+                <button data-vista="usuarios" class="solo-admin">Usuarios</button>
                 <button data-vista="reportes" class="solo-admin">Reportes</button>
             </nav>
             <div class="usuario">
@@ -209,6 +210,23 @@
                     <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Receta</th><th>Estado</th><th></th></tr></thead>
                     <tbody id="tabla-productos"></tbody>
                 </table>
+            </section>
+
+            <section id="vista-usuarios" class="vista oculto">
+                <h2>Usuarios</h2>
+                <div class="columnas">
+                   <table>
+                        <thead><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
+                        <tbody id="tabla-usuarios"></tbody>
+                    </table>
+                    <form id="form-usuario" class="tarjeta">
+                        <h2>Nuevo cajero</h2>
+                        <label>Nombre completo <input name="nombre" required minlength="3" maxlength="80"></label>
+                        <label>Usuario <input name="usuario" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_.]+" title="Solo letras, números, punto y guion bajo"></label>
+                        <label>Contraseña <input name="password" type="password" required minlength="8" maxlength="72"></label>
+                        <button>Registrar cajero</button>
+                    </form>
+                </div>
             </section>
 
             <section id="vista-reportes" class="vista oculto">

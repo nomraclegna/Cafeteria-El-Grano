@@ -160,6 +160,7 @@ const cargadores = {
     pedidos: cargarPedidos,
     inventario: cargarInventario,
     productos: cargarProductos,
+    usuarios: cargarUsuarios,
     reportes: cargarReportes,
 };
 
@@ -387,6 +388,41 @@ $("#tabla-productos").addEventListener("click", (evento) => ejecutar(async () =>
     }
     avisar("Producto actualizado.");
     await cargarProductos();
+}));
+
+// Usuarios
+async function cargarUsuarios() {
+    const usuarios = await api("/usuarios");
+    $("#tabla-usuarios").innerHTML = usuarios.map((u) => `
+        <tr>
+            <td>${esc(u.nombre)}</td>
+            <td>${esc(u.usuario)}</td>
+            <td>${u.rol}</td>
+            <td><span class="etiqueta ${u.activo ? "ok" : "cancelado"}">${u.activo ? "Activo" : "Inactivo"}</span></td>
+            <td>${u.id === sesion.usuario.id ? "" : `<button class="mini secundario" data-activar="${u.id}" data-valor="${!u.activo}">${u.activo ? "Desactivar" : "Activar"}</button>`}</td>
+        </tr>`).join("");
+}
+
+$("#form-usuario").addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    ejecutar(async () => {
+        const datos = new FormData(evento.target);
+        const usuario = await api("/usuarios", {
+            method: "POST",
+            json: { nombre: datos.get("nombre"), usuario: datos.get("usuario"), password: datos.get("password"), rol: "cajero" },
+        });
+        evento.target.reset();
+        avisar(`Cajero '${usuario.usuario}' registrado.`);
+        await cargarUsuarios();
+    });
+});
+
+$("#tabla-usuarios").addEventListener("click", (evento) => ejecutar(async () => {
+    const { activar, valor } = evento.target.dataset;
+    if (!activar) return;
+    await api(`/usuarios/${activar}`, { method: "PUT", json: { activo: valor === "true" } });
+    avisar("Usuario actualizado.");
+    await cargarUsuarios();
 }));
 
 // Reportes
