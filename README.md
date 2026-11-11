@@ -72,7 +72,7 @@ PIA-Cafeteria/
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/nomraclegna/Cafeter-a-El-Grano.git
-   cd PIA-Cafeteria
+   cd Cafeteria-El-Grano
    ```
 
 2. **Instalar las dependencias:**
