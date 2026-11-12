@@ -5,13 +5,15 @@ description = "API REST para la administración de una cafetería: productos, in
 authors = [
     { name = "Angel Emiliano Carmona Lozano" },
     { name = "Luis Rolando Aguilar Ortiz" },
-    { name = "Liliana Valeria Ramos Avila" },
+    { name = "Lilian Valeria Ramos Avila" },
     { name = "Dylan Isai Garcia Tovar" },
     { name = "Diego Barrientos Gallegos" }
 ]
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["fastapi (>=0.162.2,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)", "sqlalchemy (>=2.1.8,<3.0.0)", "pydantic-settings (>=2.16.2,<3.0.0)", "pyjwt (>=2.15.1,<3.0.0)", "bcrypt (>=5.0.0,<6.0.0)", "python-multipart (>=0.0.33,<0.0.34)"]
+dependencies = ["fastapi (>=0.162.2,<0.163.0)", "uvicorn (>=0.54.0,<0.55.0)", 
+                "sqlalchemy (>=2.1.8,<3.0.0)", "pydantic-settings (>=2.16.2,<3.0.0)", "pyjwt (>=2.15.1,<3.0.0)", 
+                "bcrypt (>=5.0.0,<6.0.0)", "python-multipart (>=0.0.33,<0.0.34)"]
 
 [tool.poetry]
 package-mode = false
